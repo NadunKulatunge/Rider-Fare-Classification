@@ -21,6 +21,30 @@ def AddDuration(df):
     trip_duration = trip_duration.dt.total_seconds()
     return trip_duration
 
+def AddDurationWaitingFare(df):
+    duration_waiting_fare = (df["duration"] - df["meter_waiting"])/df["fare"]
+    return duration_waiting_fare
+
+def AddFarePerDistance(df):
+    fare_per_distance = (df["fare"])/df["distance"]
+    return fare_per_distance
+
+def AddFarePerDuration(df):
+    fare_per_duration= (df["fare"])/df["duration"]
+    return fare_per_duration
+
+def AddSpeed(df):
+    speed = df["distance"]/(df["duration"] - df["meter_waiting"])
+    return speed
+
+def AddAdditionalFarePerDistance(df):
+    additional_fare_per_distance = (df["additional_fare"])/df["distance"]
+    return additional_fare_per_distance
+
+def AddAdditionalFareAsFactor(df):
+    additional_fare_as_factor = df["additional_fare"] / df["fare"]
+    return additional_fare_as_factor
+
 
 #reading the train dataset
 df_train = pd.read_csv("train.csv")
@@ -34,6 +58,20 @@ df_train['trip_duration'] = AddDuration(df_train)
 #AddDistance to train data
 df_train['distance'] = Distance(df_train['pick_lat'].tolist(), df_train['pick_lon'].tolist(), df_train['drop_lat'].tolist(), df_train['drop_lon'].tolist())
 
+#Add Duration Waiting Fare to train data
+df_train['duration_waiting_fare'] = AddDurationWaitingFare(df_train)
+
+#Add Fare Per Distance to train data
+df_train['fare_per_distance'] = AddFarePerDistance(df_train)
+
+#Add Fare Per Duration to train data
+df_train['fare_per_duration'] = AddFarePerDuration(df_train)
+
+#Add Speed train data
+df_train['speed'] = AddSpeed(df_train)
+
+#Add Additional Fare Per Distance to train data
+df_train['additional_fare_per_distance'] = AddAdditionalFarePerDistance(df_train)
 
 #Removing unnsessary columns
 x_train = df_train.drop(columns=["tripid","pickup_time","drop_time","pick_lat","pick_lon","drop_lat","drop_lon","label","output_label"])
@@ -54,6 +92,23 @@ df_test['trip_duration'] = AddDuration(df_test)
 #AddDistance to test data
 df_test['distance'] = Distance(df_test['pick_lat'].tolist(), df_test['pick_lon'].tolist(), df_test['drop_lat'].tolist(), df_test['drop_lon'].tolist())
 
+#Add Duration Waiting Fare to test data
+df_test['duration_waiting_fare'] = AddDurationWaitingFare(df_test)
+
+#Add Fare Per Distance to test data
+df_test['fare_per_distance'] = AddFarePerDistance(df_test)
+
+#Add Fare Per Duration to test data
+df_test['fare_per_duration'] = AddFarePerDuration(df_test)
+
+#Add Speed test data
+df_test['speed'] = AddSpeed(df_test)
+
+#Add Additional Fare Per Distance to test data
+df_test['additional_fare_per_distance'] = AddAdditionalFarePerDistance(df_test)
+
+#Add Additional Fare As Factor to test data
+df_test['additional_fare_as_factor'] = AddAdditionalFareAsFactor(df_test)
 
 #Removing unnsessary columns
 x_test = df_test.drop(columns=["tripid","pickup_time","drop_time","pick_lat","pick_lon","drop_lat","drop_lon"])
